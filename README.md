@@ -3,33 +3,48 @@
 `Cake` is an enhanced version of `cake` and is 100% backwards-compatible
 (as of this writing).
 
-`jaskenas` wants to keep the `cake` in the `coffee-script` distribution to be 
-light and simple. Fair enough. Let there be Cake! 
-
+`jaskenas` wants the `cake` in the `coffee-script` distribution to remain light 
+and simple. Fair enough. Let there be Cake!
 
 ## Enhancements Over cake
 
-Sections marked TODO are work in progress.
+TODO section contains enhancements in the works.
 
 * Asynchronous Tasks
 
         task 'generate', (options, done) ->
             generateCoffeeScript 'src/', done
 
-* Task Dependencies
+* Task Dependencies (async aware)
 
         task 'all', 'Run all tasks', ['clean', 'generate', 'test']
 
-* Multi-target Invoke. Serially calls each task
+* Multi-target Invoke. Serially calls each task (async aware)
 
         invoke 'task1', 'task2', 'taskn', ->
             doStuff()
+
+
+## Installation
+
+For now, use repository
+
+    git clone git://github.com/mgutz/coffee-cake.git
+    cd cofee-cake
+    npm link
+
+## To test
+
+    cd test
+    Cake test
+
+## TODO
 
 * [TODO] File task helpers
 
         task 'app.js'
             file = 'public/jss/app.js' 
-            scripts = find('lib/scripts', '/\.js$/')
+            scripts = find('lib/scripts', '/\.js$/') # recursive
             if outdated(file, scripts)
                 concatenateFiles file, scripts
             
