@@ -1,0 +1,22 @@
+{
+    "name":         "Cake",
+    "description":  "Enhanced cake build tool.",
+    "keywords":     ["build", "coffeescript"],
+    "author":       "Mario Gutierrez",
+    "email":        "mario@mgutz.com",
+    "version":      "0.1.0-pre",
+    "licenses":     [{
+      "type":       "MIT",
+      "url":        "http://github.com/mgutz/coffee-cake/raw/master/LICENSE"
+    }],
+    "engines":      {
+      "node":       ">= 0.3.4"
+    },
+    "bin":          {
+      "Cake":       "./bin/Cake"
+    },
+    "dependencies": {
+        "coffee-script": ">= 1.0.0",
+        "underscore": ">= 1.1.4"
+    }
+}

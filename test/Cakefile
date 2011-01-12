@@ -1,0 +1,65 @@
+# Test by running, `Cake test`
+# To see it fail with not enough time for async tasks, `Cake --cake-timeout 0 test`
+
+assert = require('assert')
+
+order = []
+depOrder = []
+
+# run all tests
+task 'test', ['test-dependencies', 'test-invoke']
+
+# This task depends on several dependencies. Not the order in the assert 
+# and that each task is called exactly once. `common` task is in the 
+# dependencies list of `depA` and `depB`.
+task 'test-dependencies', 'should call common once', ['depA', 'depB'], ->
+  assert.deepEqual depOrder, ['common', 'depA', 'depB', 'depC']
+  console.log 'pass test-dependencies'
+
+task 'common', ->
+  depOrder.push 'common'
+
+task 'depA', 'description', ['common'], (options, done) ->
+  setTimeout (->
+    depOrder.push 'depA'
+    done()
+  ), 75
+
+task 'depB', ['common', 'depA'], ->
+  depOrder.push 'depB'
+  invoke 'depC'
+
+task 'depC', ->
+  depOrder.push 'depC'
+
+
+# Note the `clean` task is executed twice, and is invoked by `test-invoke` 
+# and `post`. That's the difference between an invoke and a dependency. If 
+# you have many tasks with many references, dependencies saves build times.
+#
+# This optimization is important if you are watching a directory and running 
+# a Cakefile on any change.
+task 'test-invoke', ->
+  invoke 'clean', 'generate', 'post', ->
+    assert.deepEqual order, ['clean', 'generate', 'coffeeToJS', 'clean', 'post']
+    console.log 'pass test-invoke'
+    
+task 'clean', 'Clean the project.', (options, done) ->
+  setTimeout (->
+    order.push 'clean'
+    done()
+  ), 125
+
+task 'generate', ->
+  order.push 'generate'
+  invoke 'coffeeToJS'
+
+task 'coffeeToJS', ->
+  order.push 'coffeeToJS'
+
+task 'post', (options, done) ->
+  invoke 'clean'
+  setTimeout (->
+    order.push 'post'
+    done()
+  ), 125
